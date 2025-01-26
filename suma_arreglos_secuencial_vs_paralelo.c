@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <omp.h>        // Importante para usar las funciones de OpenMP
+#include <omp.h>  // Librería para usar OpenMP
 
-#define N 1000000       // Tamaño de los arreglos, ajústalo según quieras
+#define N 1000000  // Tamaño de los arreglos
+#define CHUNK 100  // Tamaño de los pedazos
 
 int main() {
     int *A, *B, *C;
@@ -22,13 +23,13 @@ int main() {
     // -------------------------
     // 1) Suma SECUENCIAL
     // -------------------------
-    double start_seq = omp_get_wtime();  // inicio tiempo secuencial
+    double start_seq = omp_get_wtime();  // Inicio tiempo secuencial
 
     for (int i = 0; i < N; i++) {
         C[i] = A[i] + B[i];
     }
 
-    double end_seq = omp_get_wtime();    // fin tiempo secuencial
+    double end_seq = omp_get_wtime();    // Fin tiempo secuencial
     double tiempo_secuencial = end_seq - start_seq;
 
     // Imprimir los primeros 5 resultados para verificar
@@ -52,15 +53,16 @@ int main() {
         }
     }
 
-    double start_par = omp_get_wtime();  // inicio tiempo paralelo
+    double start_par = omp_get_wtime();  // Inicio tiempo paralelo
 
-    // Suma paralela
-    #pragma omp parallel for
-    for (int i = 0; i < N; i++) {
+    // Declarar la variable i antes de usarla en el bucle paralelo
+    int i;
+    #pragma omp parallel for shared(A, B, C) private(i) schedule(static, CHUNK)
+    for (i = 0; i < N; i++) {
         C[i] = A[i] + B[i];
     }
 
-    double end_par = omp_get_wtime();    // fin tiempo paralelo
+    double end_par = omp_get_wtime();    // Fin tiempo paralelo
     double tiempo_paralelo = end_par - start_par;
 
     // Imprimir primeros 5 resultados de la versión paralela
