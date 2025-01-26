@@ -1,0 +1,20 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compilar el proyecto con GCC-14 y OpenMP",
+            "type": "shell",
+            "command": "gcc-14",
+            "args": [
+                "-fopenmp",          // Activa OpenMP
+                "suma_arreglos_secuencial_vs_paralelo.c",   // Archivo fuente
+                "-o",                // Indicamos nombre del ejecutable
+                "suma_arreglos_secuencial_vs_paralelo"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
